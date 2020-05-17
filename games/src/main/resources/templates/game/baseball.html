@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+		let numId;
+		
+		$('button').click(function() {
+			
+			nullCheck();
+			
+			//for(let i = 1; i <= 4; i++){
+				//numId = "#bb"+i;
+				//console.log(numId)
+		//	numCheck(Number($('#bb'+i).val()))
+			//}
+			
+			
+			
+			//console.log(Number($('#bb1').val())+1);
+		})
+
+		let numCheck = function(i){
+			if(i-i == 0){
+				console.log('숫자')
+			}else{
+				console.log('숫자 아님')
+			}
+		}
+		
+		let nullCheck = function(){
+			let nullCount = 0;
+			for(let i = 1; i <= 4; i++){
+				numId = "#bb"+i;
+				if($(numId).val()==''){
+					nullCount++;
+				}
+			}
+				console.log(nullCount)
+		}
+		
+	})
+</script>
+
+<style>
+#game_title {
+	font-size: 30px;
+	text-align: center;
+	margin: auto;
+	width: 50%;
+	border: 3px solid green;
+	padding: 10px;
+	margin: auto;
+	text-align: center;
+}
+
+#game_rule {
+	text-align: center;
+	width: 50%;
+	border: 3px solid green;
+	padding: 10px;
+	margin: auto;
+	width: 50%;
+}
+
+#game_rule {
+	text-align: center;
+	width: 50%;
+	border: 3px solid green;
+	padding: 10px;
+	margin: auto;
+	width: 50%;
+}
+
+#game_board {
+	text-align: center;
+	width: 50%;
+	border: 3px solid green;
+	padding: 10px;
+	margin: auto;
+	width: 50%;
+}
+
+#game_board input {
+	margin-top: 20px;
+	padding: auto;
+	width: 40px; 
+	text-align: center;
+}
+
+#game_board button {
+	margin-top: 30px;
+}
+
+#game_board small {
+	color: silver;
+}
+</style>
+</head>
+<body>
+
+
+	<div id="game_title">
+		<b3>Base Ball Game</b3>
+	</div>
+	<br>
+	<div id=game_rule>
+		※ 게임 규칙<br> 1.블라블라<br> 1.블라블라<br> 1.블라블라<br>
+		1.블라블라
+	</div>
+	<br>
+	<div id="game_board">
+		<input type="text" id="bb1" maxlength="1" max="9" min="0">
+		<input type="text" id="bb2" maxlength="1" max="9" min="0">
+		<input type="text" id="bb3" maxlength="1" max="9" min="0">
+		<input type="text" id="bb4" maxlength="1" max="9" min="0">
+		<br> 
+		<small> - 숫자를 적은 후 제출버튼을 클릭해주세요 - </small>
+		<br>
+		<button type="button">제출</button>
+	</div>
+
+</body>
+</html>
