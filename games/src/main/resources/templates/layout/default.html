@@ -9,8 +9,9 @@
 	<!-- header section -->
 	<div th:replace="fragments/header :: headerFragment"></div>
 	
-	<th:block layout:fragment="contents"></th:block>
-	
+	<div style="padding-top: 50px; padding-bottom: 50px;">
+		<th:block layout:fragment="contents"></th:block>
+	</div>
 	<!-- footer section -->
 	<div th:replace="fragments/footer :: footerFragment"></div>
 </body>

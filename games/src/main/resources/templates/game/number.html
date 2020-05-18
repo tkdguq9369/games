@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/default}">
+	
+<th:block layout:fragment="title">
+	<title> 야구게임 </title>
+</th:block>
+
+<th:block layout:fragment="css">
+	<link rel="stylesheet" type="text/css" th:href="@{/css/numberGame.css}">
+</th:block>
+
+<th:block layout:fragment="customScript">
+	<script>
+		$(document).ready(function() {
+			
+		})
+	</script>
+</th:block>
+
+<th:block layout:fragment="contents">
+	
+</th:block>
+</html>

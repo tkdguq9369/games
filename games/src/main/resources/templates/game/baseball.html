@@ -1,129 +1,195 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/default}">
+	
+<th:block layout:fragment="title">
+	<title> 숫자 야구 게임 </title>
+</th:block>
 
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script>
-	$(document).ready(function() {
-		let numId;
-		
-		$('button').click(function() {
-			
-			nullCheck();
-			
-			//for(let i = 1; i <= 4; i++){
-				//numId = "#bb"+i;
-				//console.log(numId)
-		//	numCheck(Number($('#bb'+i).val()))
-			//}
-			
-			
-			
-			//console.log(Number($('#bb1').val())+1);
-		})
+<th:block layout:fragment="css">
+	<link rel="stylesheet" type="text/css" th:href="@{/css/baseballGame.css}">
+</th:block>
 
-		let numCheck = function(i){
-			if(i-i == 0){
-				console.log('숫자')
-			}else{
-				console.log('숫자 아님')
-			}
+<th:block layout:fragment="customScript">
+	
+	<script>
+	/* 숫자인지 아닌지 체크 */
+	let numCheck = function(i){
+		if(i-i == 0){
+			return true;								//숫자인 경우 true리턴
+		}else{
+			return false;								//숫자가 아닌경우 false리턴
 		}
+	}
+	
+	/* null체크, 중복숫자 체크 포함 체크 */
+	let check = function(){ 							// null체크 , 숫자인지 아닌지 체크
+		let nullCount = 0;
+		let notNumCount = 0;
+		let playerArray = [];
+		let playerInputValue = 0;
 		
-		let nullCheck = function(){
-			let nullCount = 0;
-			for(let i = 1; i <= 4; i++){
-				numId = "#bb"+i;
-				if($(numId).val()==''){
-					nullCount++;
+		for(let i = 1; i <= 4; i++){ 					// null check
+			numId = "#bb"+i;
+			playerInputValue = parseInt($(numId).val())	// 문자를 정수형으로 변환후 playerInputvalue변수에 저장
+			
+			if($(numId).val()==''){ 					// null인 경우
+				nullCount++;
+			}else{ 										// null이 아닌경우, 숫자인지 아닌지 체크 들어감.
+				if(numCheck($(numId).val()) == true){	// 숫자인경우 배열에 저장후 전달
+					if(playerArray.indexOf(playerInputValue) != -1){ // 배열안에 포함된 숫자인경우
+						return 3;
+					}
+					playerArray.push(parseInt($(numId).val())); // 문자를 숫자로 캐스팅후 배열에 push
+				}else{									// 숫자가 아닌경우 notNumCount 1씩 증가
+					notNumCount++;
 				}
 			}
-				console.log(nullCount)
 		}
 		
-	})
-</script>
+		/* 결과 리턴  */
+		if(nullCount != 0){ 							// null인경우 먼저 0이 아닌경우 1을 리턴
+			return 1;
+		}else if(notNumCount != 0){ 					// 숫자가 아닌경우 2를 리턴
+			return 2;
+		}else{
+			return playerArray;							// 두개의 경우가 아닌경우 0을 리턴
+		}
+	}
+	
+	/* 초기화 함수 */
+	let init = function(){
+		let number = [];
+		let bbgNum = 4; //base ball game number
+		let max = 9;
+		let min = 0;
+		
+		while(1){
+			let index = Math.floor((Math.random() * (max - min + 1)) + min); // 랜덤한 값을 index에 저장
+			
+			if(number.indexOf(index) != -1){ 								 // 배열에 있는 값에 index(랜덤값)이 있는지 체크
+				continue;
+			}
+			number.push(index);
+			
+			if(number.length == bbgNum){									 //총 4개가 되면 반복문 정지
+				break;
+			}
+		}
+		console.log(number)
+		$('#game_count').html('');
+		
+		return number;
+	}
+	
+	/* 스트라이크, 볼 체크 */
+	let sbCheck = function(i, j){ // strike ball check
+		let cArray = i; // 맞춰야할 랜덤 배열
+		let pArray = j; // 플레이어가 입력한 값 배열
+		let sCount = 0; // 스트라이크 카운트
+		let bCount = 0; // 볼 카운트
+		let sbString = '';
+		let playerInputVal='';
+		// 1. 자리와 숫자 모두 일치하는경우
+		// 2. 숫자만 일치하는 경우
+		// 3. 모두 일치하지 않는 경우 indexof -1 리턴
+		for(let i = 0; i < 4; i++){
+			playerInputVal += ' '+pArray[i]+' ';	 //리턴될 사용자 입력값 문자열 만들어주기
+			
+			if(cArray.indexOf(pArray[i]) != -1){ // 정답 배열에 있는지 확인
+				if(cArray[i] == pArray[i]){		 // 배열에 있으면서, 위치가 일치하는 경우
+					sCount++;
+				}else{							 // 배열에 있지만, 위치가 일치하지 않은경우
+					bCount++;
+				}
+			}
+		}
+		
+		// 리턴될 s, b카운트 문자열 만들어주기 
+		if(sCount == 0 && bCount != 0){
+			sbString = bCount+'B';
+		}else if(sCount != 0 && bCount == 0){
+			sbString = sCount+'S';
+		}else {
+			sbString = sCount+'S '+bCount+'B';
+		}
+		
+		//볼 스트라이크 여부 리턴, 입력값 리턴.
+		return {
+			sbString : sbString,
+			playerInputVal : playerInputVal
+		}
+	}
+	
+	/* 리셋 */
+	let reset = function(){
+		location.reload();
+	}
+	</script>
+	
+	<script>
+		$(document).ready(function() {
+			let numId;											// input칸 id 저장용도
+			let initArray = init();								// 초기화 후 설정된 배열 initArray에 저장
+			let playCount = 0;
+			
+			$('#confirm').click(function() {
+				let checkVal = check();
+				
+				if(checkVal == 1){
+					alert('빈칸을 채워주세요')
+				}else if(checkVal == 2){
+					alert('숫자를 입력해주세요')
+				}else if(checkVal == 3){
+					alert('중복된 숫자가 있습니다. 확인해주세요.')
+				}else{
+					playCount++;
+					let sb = sbCheck(initArray, checkVal);
+					
+					if(sb.sbString == '4S'){
+						$('#confirm').remove();
+						$('#game_count').append('<span>'+playCount+'회차 ( '+sb.sbString+' ) - '+ sb.playerInputVal +'</span> - <span style="color:red">정답</span><br>');
+					}else{
+						$('#game_count').append('<span>'+playCount+'회차 ( '+sb.sbString+' ) - '+ sb.playerInputVal +'</span><br>');
+					}
+				}
+			})
+		})
+	</script>
+</th:block>
 
-<style>
-#game_title {
-	font-size: 30px;
-	text-align: center;
-	margin: auto;
-	width: 50%;
-	border: 3px solid green;
-	padding: 10px;
-	margin: auto;
-	text-align: center;
-}
-
-#game_rule {
-	text-align: center;
-	width: 50%;
-	border: 3px solid green;
-	padding: 10px;
-	margin: auto;
-	width: 50%;
-}
-
-#game_rule {
-	text-align: center;
-	width: 50%;
-	border: 3px solid green;
-	padding: 10px;
-	margin: auto;
-	width: 50%;
-}
-
-#game_board {
-	text-align: center;
-	width: 50%;
-	border: 3px solid green;
-	padding: 10px;
-	margin: auto;
-	width: 50%;
-}
-
-#game_board input {
-	margin-top: 20px;
-	padding: auto;
-	width: 40px; 
-	text-align: center;
-}
-
-#game_board button {
-	margin-top: 30px;
-}
-
-#game_board small {
-	color: silver;
-}
-</style>
-</head>
-<body>
-
-
+<th:block layout:fragment="contents">
 	<div id="game_title">
-		<b3>Base Ball Game</b3>
+		<b3>숫자 야구 게임</b3>
 	</div>
 	<br>
-	<div id=game_rule>
-		※ 게임 규칙<br> 1.블라블라<br> 1.블라블라<br> 1.블라블라<br>
-		1.블라블라
+	<div id="game_rule">
+		※ 게임 규칙
+		<br> <span class="rule">1.</span> 사용되는 숫자는 0 ~ 9이며, 서로 다른 숫자로 이루어져 있습니다.
+		<br> <span class="rule">2.</span> 숫자와 위치가 일치하는 경우 스트라이크(S), 숫자만 일치하는경우 볼(B)로 표기됩니다.
+		<br> <span class="rule">3.</span> 4개의 스트라이크를 만들어야 게임에서 승리합니다.
+		<br> <span class="rule">4.</span> 초기화 버튼을 클릭하면, 게임이 새롭게 시작됩니다.
 	</div>
 	<br>
+	
 	<div id="game_board">
-		<input type="text" id="bb1" maxlength="1" max="9" min="0">
-		<input type="text" id="bb2" maxlength="1" max="9" min="0">
-		<input type="text" id="bb3" maxlength="1" max="9" min="0">
-		<input type="text" id="bb4" maxlength="1" max="9" min="0">
-		<br> 
+		<input type="text" id="bb1" maxlength="1">
+		<input type="text" id="bb2" maxlength="1">
+		<input type="text" id="bb3" maxlength="1">
+		<input type="text" id="bb4" maxlength="1">
+		&ensp;<button id="confirm" type="button">제출</button>
+	<br> 
 		<small> - 숫자를 적은 후 제출버튼을 클릭해주세요 - </small>
-		<br>
-		<button type="button">제출</button>
+	<br>
+		<button id="reset" type="button" onclick="reset()">초기화</button>
+		
 	</div>
-
-</body>
+	<br>
+	<div id="game_correct">
+		회차 표시
+		<div id="game_count">
+		</div>
+	</div>
+</th:block>
 </html>
