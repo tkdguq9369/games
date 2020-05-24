@@ -82,7 +82,6 @@
 			let playValue = 0;
 			let spanHtml = '';		//up down correct
 			let errMsg = '';
-			console.log(correct)
 			
 			$('#solBtn').click(function(){
 				
@@ -99,6 +98,7 @@
 				
 				
 				playCount(clickCount);
+				$('#solNum').val('') // 입력후 input칸 초기화
 			})
 			
 			
